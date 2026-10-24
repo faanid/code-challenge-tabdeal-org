@@ -33,6 +33,21 @@ const {
 })
 
 const videos = computed(() => data.value?.videobyuser ?? [])
+const currentPage = ref(1)
+const pageSize = 6
+
+const totalPages = computed(() =>
+  Math.ceil(videos.value.length / pageSize),
+)
+
+const paginatedVideos = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  return videos.value.slice(start, start + pageSize)
+})
+
+watch(videos, () => {
+  currentPage.value = 1
+})
 
 function searchVideos() {
   const query = searchInput.value.trim()
@@ -176,7 +191,7 @@ function formatViews(views: number) {
      
 
       <article
-        v-for="video in videos"
+       v-for="video in paginatedVideos"
         :key="video.uid"
         class="overflow-hidden rounded-xl border border-white/10 bg-[#202020] transition hover:-translate-y-1 hover:border-yellow-400/40"
       >
@@ -204,5 +219,33 @@ function formatViews(views: number) {
       </article>
 
     </section>
+    <nav
+  v-if="totalPages > 1"
+  class="mt-8 flex items-center justify-center gap-4"
+  aria-label="صفحه‌بندی ویدئوها"
+  dir="rtl"
+>
+  <button
+    type="button"
+    :disabled="currentPage === 1"
+    class="rounded-lg border border-white/10 px-4 py-2 text-sm transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40"
+    @click="currentPage--"
+  >
+    قبلی
+  </button>
+
+  <span class="text-sm text-gray-400" aria-live="polite">
+    صفحه {{ currentPage }} از {{ totalPages }}
+  </span>
+
+  <button
+    type="button"
+    :disabled="currentPage === totalPages"
+    class="rounded-lg border border-white/10 px-4 py-2 text-sm transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-40"
+    @click="currentPage++"
+  >
+    بعدی
+  </button>
+</nav>
   </main>
 </template>
