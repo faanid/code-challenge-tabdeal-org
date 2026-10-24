@@ -173,28 +173,36 @@ function formatViews(views: number) {
       v-else
       class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
     >
+     
+
       <article
         v-for="video in videos"
         :key="video.uid"
         class="overflow-hidden rounded-xl border border-white/10 bg-[#202020] transition hover:-translate-y-1 hover:border-yellow-400/40"
       >
-        <img
-          :src="video.big_poster || video.small_poster"
-          :alt="video.title"
-          class="aspect-video w-full bg-[#252525] object-cover"
-          loading="lazy"
-        />
+        <NuxtLink
+          :to="`/videos/${video.uid}`"
+          class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-yellow-400"
+        >
+          <img
+            :src="video.big_poster || video.small_poster"
+            :alt="video.title"
+            class="aspect-video w-full bg-[#252525] object-cover"
+            loading="lazy"
+          />
 
-        <div class="p-4">
-          <h3 class="font-semibold leading-7">
-            {{ video.title }}
-          </h3>
+          <div class="p-4">
+            <h3 class="font-semibold leading-7">
+              {{ video.title }}
+            </h3>
 
-          <p class="mt-3 text-sm text-gray-400">
-            {{ formatViews(video.visit_cnt) }} بازدید
-          </p>
-        </div>
+            <p class="mt-3 text-sm text-gray-400">
+              {{ formatViews(video.visit_cnt) }} بازدید
+            </p>
+          </div>
+        </NuxtLink>
       </article>
+
     </section>
   </main>
 </template>
