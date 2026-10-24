@@ -1,29 +1,11 @@
 
 <script setup lang="ts">
-interface Video {
-  id: string
-  uid: string
-  title: string
-  username: string
-  sender_name?: string
-  visit_cnt: number
-  big_poster: string
-  small_poster?: string
-  duration?: number
-  sdate?: string
-  description?: string
-  frame?: string
-}
-
-interface VideoResponse {
-  video: Video
-  source: string
-}
+import type { VideoDetailResponse,Video, VideosResponse} from '~/types/video'
 
 const route = useRoute()
 const uid = computed(() => String(route.params.uid || ''))
 
-const { data, status, error, refresh } = await useFetch<VideoResponse>(
+const { data, status, error, refresh } = await useFetch<VideoDetailResponse>(
   () => `/api/videos/${encodeURIComponent(uid.value)}`,
 )
 

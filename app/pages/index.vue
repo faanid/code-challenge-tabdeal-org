@@ -1,21 +1,6 @@
 
 <script setup lang="ts">
-interface Video {
-  id?: string
-  uid: string
-  title: string
-  username?: string
-  visit_cnt: number
-  big_poster: string
-  small_poster?: string
-  duration?: number
-  sdate?: string
-}
-
-interface VideosResponse {
-  videobyuser: Video[]
-  source?: string
-}
+import type { Video, VideosResponse } from '~/types/video'
 
 const searchInput = ref('')
 const searchQuery = ref('')
