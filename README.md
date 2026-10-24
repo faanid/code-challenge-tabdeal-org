@@ -1,75 +1,84 @@
-# Nuxt Minimal Starter
+# Tabdeal Video Explorer
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A responsive web application for browsing educational videos from Tabdeal's Aparat channel, built as a front-end development challenge.
 
-## Setup
+**Live Demo:** https://tabdeal-challenge-task.netlify.app
 
-Make sure to install dependencies:
+## Features
+
+- Browse educational videos from Tabdeal's Aparat channel
+- Search videos by title
+- Navigate through paginated video results
+- View individual video details
+- Responsive layout for desktop and mobile devices
+- Server-side rendering with Nuxt
+
+## Tech Stack
+
+- **Nuxt** — Vue-based application framework with server-side rendering
+- **Vue.js** — Component-based user interface
+- **Tailwind CSS** — Utility-first styling
+- **TypeScript** — Type-safe development
+- **Aparat Public API** — Video data source
+- **Netlify** — Deployment
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js
+- npm
+
+### Installation
+
+Clone the repository and install the dependencies:
 
 ```bash
-# npm
+git clone https://github.com/faanid/code-challenge-tabdeal-org.git
+cd code-challenge-tabdeal-org
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+### Development
 
-Start the development server on `http://localhost:3000`:
+Start the development server:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Open `http://localhost:3000` in your browser.
 
-Build the application for production:
+### Production Build
+
+Build the application:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Preview the production build locally:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## API Limitations
+
+During development, the public Aparat API endpoint for listing channel videos returned an HTTP 503 response.
+
+As a workaround, the application uses public video search results filtered by the channel username. However, the search endpoint does not guarantee complete coverage of the channel's videos, and attempts to retrieve subsequent search results returned HTTP 400.
+
+Consequently, the displayed video list and search results may be incomplete. The application relies on the data returned by Aparat and does not fabricate missing video information.
+
+Complete channel coverage and reliable pagination depend on the availability of a supported, functioning API endpoint.
+
+## Deployment
+
+The application is deployed on Netlify:
+
+https://tabdeal-challenge-task.netlify.app
+
+## License
+
+This project was created as a front-end development take-home assignment for Tabdeal.
