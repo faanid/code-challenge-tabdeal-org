@@ -57,17 +57,7 @@ function formatViews(views: number) {
 <template>
   <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-12">
     <section class="mb-8">
-      <p class="mb-3 text-sm font-medium text-yellow-400">
-        آکادمی تبدیل
-      </p>
 
-      <h1 class="text-3xl font-bold leading-relaxed md:text-5xl">
-        دنیای آموزش با تبدیل
-      </h1>
-
-      <p class="mt-4 max-w-2xl leading-8 text-gray-400">
-        ویدئوهای آموزشی و تحلیل بازار را اینجا دنبال کن.
-      </p>
     </section>
 
     <form
