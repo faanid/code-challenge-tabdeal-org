@@ -1,4 +1,3 @@
-
 interface AparatVideo {
   id: string
   uid: string
@@ -16,22 +15,32 @@ interface AparatSearchResponse {
 }
 
 const CHANNEL_USERNAME = 'tabdealplatform'
+const SEARCH_TIMEOUT_MS = 10_000
 
 async function searchAparatVideos(searchText: string): Promise<AparatVideo[]> {
   const url =
     `https://www.aparat.com/etc/api/videoBySearch/text/` +
     `${encodeURIComponent(searchText)}/perpage/10`
 
-  const response = await $fetch<AparatSearchResponse>(url)
+  const response = await $fetch<AparatSearchResponse>(url, {
+    timeout: SEARCH_TIMEOUT_MS,
+  })
 
   return (response.videobysearch ?? []).filter(
-    video => video.username === CHANNEL_USERNAME,
+    video => video.username?.toLowerCase() === CHANNEL_USERNAME,
   )
 }
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const searchText = String(query.search ?? '').trim()
+
+  if (searchText.length > 100) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Search text must not exceed 100 characters.',
+    })
+  }
 
   if (searchText && searchText.length < 4) {
     throw createError({
@@ -41,7 +50,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // The channel-list endpoint currently returns 503.
-  // Use real public-search results as a temporary fallback.
+  // Public search is a best-effort fallback and cannot guarantee full coverage.
   const searchTerms = searchText
     ? [searchText]
     : ['تبدیل', 'صرافی تبدیل', 'tabdeal']
@@ -50,22 +59,26 @@ export default defineEventHandler(async (event) => {
     searchTerms.map(searchAparatVideos),
   )
 
-  const videos = results
-    .filter(
-      (result): result is PromiseFulfilledResult<AparatVideo[]> =>
-        result.status === 'fulfilled',
-    )
-    .flatMap(result => result.value)
+  const successfulResults = results.filter(
+    (result): result is PromiseFulfilledResult<AparatVideo[]> =>
+      result.status === 'fulfilled',
+  )
 
-  if (videos.length === 0) {
+  // Distinguish an empty search result from an upstream outage.
+  if (successfulResults.length === 0) {
     throw createError({
       statusCode: 502,
-      statusMessage: 'Could not retrieve videos from Aparat.',
+      statusMessage: 'Aparat is temporarily unavailable.',
     })
   }
 
   const uniqueVideos = [
-    ...new Map(videos.map(video => [video.uid, video])).values(),
+    ...new Map(
+      successfulResults
+        .flatMap(result => result.value)
+        .filter(video => video.uid && video.title)
+        .map(video => [video.uid, video]),
+    ).values(),
   ]
 
   return {
