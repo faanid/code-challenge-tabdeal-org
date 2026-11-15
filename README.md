@@ -1,84 +1,100 @@
 # Tabdeal Video Explorer
 
-A responsive web application for browsing educational videos from Tabdeal's Aparat channel, built as a front-end development challenge.
+A responsive Persian-language video explorer for educational content published on Tabdeal's Aparat channel. Built as a front-end take-home challenge with Nuxt 4, Vue 3 and TypeScript.
 
-**Live Demo:** https://tabdeal-challenge-task.netlify.app
+**Live demo:** https://tabdeal-challenge-task.netlify.app
 
 ## Features
 
-- Browse educational videos from Tabdeal's Aparat channel
+- Browse public videos attributed to Tabdeal's Aparat channel
 - Search videos by title
-- Navigate through paginated video results
-- View individual video details
-- Responsive layout for desktop and mobile devices
-- Server-side rendering with Nuxt
+- Paginated video cards
+- Individual video detail pages with embedded playback when an embed URL is available
+- Responsive RTL interface
+- Server-rendered Nuxt application
+- Server-side API routes to keep upstream requests out of the browser
 
-## Tech Stack
+## Tech stack
 
-- **Nuxt** — Vue-based application framework with server-side rendering
-- **Vue.js** — Component-based user interface
-- **Tailwind CSS** — Utility-first styling
-- **TypeScript** — Type-safe development
-- **Aparat Public API** — Video data source
-- **Netlify** — Deployment
+- Nuxt 4
+- Vue 3
+- TypeScript
+- Tailwind CSS
+- Aparat public endpoints
+- Netlify
 
-## Getting Started
+## Requirements
 
-### Prerequisites
-
-- Node.js
+- Node.js 22 or newer
 - npm
 
-### Installation
-
-Clone the repository and install the dependencies:
+## Local development
 
 ```bash
 git clone https://github.com/faanid/code-challenge-tabdeal-org.git
 cd code-challenge-tabdeal-org
-npm install
-```
-
-### Development
-
-Start the development server:
-
-```bash
+npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000` in your browser.
+Open http://localhost:3000.
 
-### Production Build
+## Available scripts
 
-Build the application:
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the local development server |
+| `npm run build` | Build the production application |
+| `npm run preview` | Preview the production build |
+| `npm run generate` | Generate a static version where supported by the configured routes |
+
+## Application structure
+
+```text
+app/
+  app.vue
+  pages/
+    index.vue
+    videos/
+      [uid].vue
+server/
+  api/
+    videos.get.ts
+    videos/
+      [uid].get.ts
+types/
+  video.ts
+```
+
+- `app/pages/index.vue`: video listing, search controls and client-side pagination of the returned results.
+- `app/pages/videos/[uid].vue`: video detail and playback view.
+- `server/api/videos.get.ts`: server-side Aparat search and channel filtering.
+- `server/api/videos/[uid].get.ts`: server-side video detail lookup.
+- `types/video.ts`: shared response and video contracts.
+
+## Data source limitations
+
+The channel-list endpoint returned HTTP 503 during the original challenge implementation. The listing therefore uses Aparat's public search endpoint as a best-effort fallback and filters results by the channel username.
+
+This fallback has important limitations:
+
+- Search results are not a complete or authoritative channel feed.
+- The upstream search endpoint may return incomplete data or become unavailable.
+- Pagination is currently performed over the results returned by the fallback, not over the complete channel catalogue.
+- A successful empty search is different from an upstream outage; the API reports an upstream error only when every attempted upstream request fails.
+
+The application does not invent video records. Reliable full-channel coverage and server-side pagination require a supported channel-list endpoint or another stable data source.
+
+## Deployment
+
+The project is configured for Netlify using the Nuxt build command:
 
 ```bash
 npm run build
 ```
 
-Preview the production build locally:
+Live deployment: https://tabdeal-challenge-task.netlify.app
 
-```bash
-npm run preview
-```
+## Notes
 
-## API Limitations
-
-During development, the public Aparat API endpoint for listing channel videos returned an HTTP 503 response.
-
-As a workaround, the application uses public video search results filtered by the channel username. However, the search endpoint does not guarantee complete coverage of the channel's videos, and attempts to retrieve subsequent search results returned HTTP 400.
-
-Consequently, the displayed video list and search results may be incomplete. The application relies on the data returned by Aparat and does not fabricate missing video information.
-
-Complete channel coverage and reliable pagination depend on the availability of a supported, functioning API endpoint.
-
-## Deployment
-
-The application is deployed on Netlify:
-
-https://tabdeal-challenge-task.netlify.app
-
-## License
-
-This project was created as a front-end development take-home assignment for Tabdeal.
+This repository was created as a front-end development take-home assignment for Tabdeal.
