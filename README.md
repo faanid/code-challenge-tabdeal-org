@@ -85,6 +85,33 @@ This fallback has important limitations:
 
 The application does not invent video records. Reliable full-channel coverage and server-side pagination require a supported channel-list endpoint or another stable data source.
 
+## Continuous integration (GitHub Actions)
+
+A GitHub Actions workflow is defined at `.github/workflows/ci.yml`.
+
+It runs on pull requests targeting `master`, pushes to `master`, and manual workflow dispatches. The workflow:
+
+1. Checks out the repository.
+2. Sets up Node.js 22 with npm dependency caching.
+3. Installs the exact dependency versions from `package-lock.json` using `npm ci`.
+4. Runs `npm run build` to verify that the Nuxt application builds.
+
+The workflow is CI only: it does not publish the site.
+
+## Continuous deployment (Netlify)
+
+Netlify remains responsible for production deployment. Keep the existing Netlify Git integration enabled and configure its production branch as `master`, with `npm run build` as the build command.
+
+Recommended flow:
+
+- A pull request targeting `master` must pass the GitHub Actions CI check before it is merged.
+- After merge, Netlify builds and deploys the updated `master` branch.
+- Netlify Deploy Previews can remain enabled for pull requests if they are already configured.
+
+GitHub Actions and Netlify have separate responsibilities here, so the CI workflow does not create a second production deployment or conflict with Netlify.
+
+To enforce the CI check before merging, enable branch protection (or a ruleset) for `master` in GitHub and require the `Install and build` status check. The exact check name appears after the first successful workflow run.
+
 ## Deployment
 
 The project is configured for Netlify using the Nuxt build command:
